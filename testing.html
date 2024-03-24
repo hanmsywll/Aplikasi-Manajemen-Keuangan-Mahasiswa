@@ -1,15 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Aplikasi Manajemen Keuangan Mahasiswa</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
 </head>
+
 <body>
-    <h1>rawr</h1>
-    <h1>rawrr</h1>
-    <h1>rawrrr</h1>
-    <h1>Salma Nida Ul Jannah</h1>
-    test
+    <h1>Aplikasi Manajemen Keuangan Mahasiswa</h1>
+    <form id="transaksiForm">
+        <label for="jenis">Jenis Transaksi:</label>
+        <select id="jenis" name="jenis">
+            <option value="pemasukan">Pemasukan</option>
+            <option value="pengeluaran">Pengeluaran</option>
+        </select>
+        <br>
+        <label for="nominal">Nominal:</label>
+        <input type="number" id="nominal" name="nominal" required>
+        <br>
+        <label for="kategori">Kategori (opsional):</label>
+        <input type="text" id="kategori" name="kategori">
+        <br>
+        <label for="tanggal">Tanggal:</label>
+        <input type="date" id="tanggal" name="tanggal" required>
+        <br>
+        <button type="submit">Tambah Transaksi</button>
+    </form>
+    <br>
+    <h2>Data Keuangan</h2>
+    <table id="dataKeuangan">
+        <thead>
+            <tr>
+                <th>Jenis</th>
+                <th>Nominal</th>
+                <th>Kategori</th>
+                <th>Tanggal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <br>
+    <h2>Rekapitulasi Keuangan</h2>
+    <ul>
+        <li>Total Pemasukan: <span id="totalPemasukan"></span></li>
+        <li>Total Pengeluaran: <span id="totalPengeluaran"></span></li>
+        <li>Saldo: <span id="saldo"></span></li>
+    </ul>
+    <p>Kategori Pengeluaran Terbesar: <span id="kategoriPengeluaranTerbesar"></span></p>
+    <p>Kategori Pemasukan Terbesar: <span id="kategoriPemasukanTerbesar"></span></p>
+    <canvas id="chartPengeluaran"></canvas>
+    <canvas id="chartPemasukan"></canvas>
+
+    <script>
+        // Implementasi JavaScript di sini
+        const dataKeuangan = [];
+
+        document.getElementById("transaksiForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Mencegah form dari melakukan submit default
+
+            const jenis = document.getElementById("jenis").value;
+            const nominal = parseFloat(document.getElementById("nominal").value);
+            const kategori = document.getElementById("kategori").value;
+            const tanggal = document.getElementById("tanggal").value;
+
+            tambahTransaksiToArray(jenis, nominal, kategori, tanggal);
+            tampilData();
+            rekapData();
+
+            // Reset formulir setelah menambahkan transaksi
+            document.getElementById("jenis").value = "pemasukan";
+            document.getElementById("nominal").value = "";
+            document.getElementById("kategori").value = "";
+            document.getElementById("tanggal").value = "";
+        });
+
+        function tambahTransaksiToArray(jenis, nominal, kategori, tanggal) {
+            dataKeuangan.push({
+                jenis,
+                nominal,
+                kategori,
+                tanggal,
+            });
+        }
+
+        function tampilData() {
+            const tableBody = document.querySelector("#dataKeuangan tbody");
+            tableBody.innerHTML = ""; // Mengosongkan isi tabel sebelum menambahkan data baru
+
+            dataKeuangan.forEach((transaksi, index) => {
+                const row = tableBody.insertRow(); // Menambahkan baris baru ke tabel
+
+                const jenisCell = row.insertCell();
+                jenisCell.textContent = transaksi.jenis;
+
+                const nominalCell = row.insertCell();
+                nominalCell.textContent = `Rp${transaksi.nominal.toLocaleString()}`;
+
+                const kategoriCell = row.insertCell();
+                kategoriCell.textContent = transaksi.kategori;
+
+                const tanggalCell = row.insertCell();
+                tanggalCell.textContent = transaksi.tanggal;
+
+                const actionCell = row.insertCell();
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.onclick = function () {
+                    editNominal(index);
+                };
+                actionCell.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = function () {
+                    hapusTransaksi(index);
+                };
+                actionCell.appendChild(deleteButton);
+            });
+        }
+
+        function hitungTotal(jenis) {
+            let total = 0;
+            dataKeuangan.forEach(transaksi => {
+                if (transaksi.jenis === jenis) {
+                    total += transaksi.nominal;
+                }
+            });
+            return total;
+        }
+
+        function rekapData() {
+            const totalPemasukan = hitungTotal("pemasukan");
+            const totalPengeluaran = hitungTotal("pengeluaran");
+            const saldo = totalPemasukan - totalPengeluaran;
+
+            document.getElementById("totalPemasukan").textContent = `Rp${totalPemasukan.toLocaleString()}`;
+            document.getElementById("totalPengeluaran").textContent = `Rp${totalPengeluaran.toLocaleString()}`;
+            document.getElementById("saldo").textContent = `Rp${saldo.toLocaleString()}`;
+
+            // Temukan kategori dengan pengeluaran dan pemasukan terbesar
+            const kategoriPengeluaranTerbesar = findTerbesar(dataKeuangan, "pengeluaran");
+            const kategoriPemasukanTerbesar = findTerbesar(dataKeuangan, "pemasukan");
+
+            // Tampilkan kategori terbesar
+            document.getElementById("kategoriPengeluaranTerbesar").textContent = kategoriPengeluaranTerbesar;
+            document.getElementById("kategoriPemasukanTerbesar").textContent = kategoriPemasukanTerbesar;
+        }
+
+        function editNominal(index) {
+            function editNominal(index) {
+                const newNominal = prompt("Masukkan nominal baru:");
+                if (newNominal !== null) {
+                    const parsedNominal = parseFloat(newNominal);
+                    if (!isNaN(parsedNominal)) {
+                        dataKeuangan[index].nominal = parsedNominal;
+                        tampilData();
+                        rekapData();
+                        buatGrafik();
+                    } else {
+                        alert("Nominal yang dimasukkan tidak valid. Silakan masukkan angka yang valid.");
+                    }
+                }
+            }
+        }
+
+        function hapusTransaksi(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) {
+                dataKeuangan.splice(index, 1);
+                tampilData();
+                rekapData();
+                buatGrafik();
+            }
+        }
+
+        function hitungRataRata(data, kategori) {
+            let total = 0;
+            let jumlahTransaksi = 0;
+            for (const transaksi of data) {
+                if (transaksi.kategori === kategori) {
+                    total += transaksi.nominal;
+                    jumlahTransaksi++;
+                }
+            }
+            return total / jumlahTransaksi;
+        }
+
+        function findTerbesar(data, jenis) {
+            let kategoriTerbesar = "";
+            let nilaiTerbesar = 0;
+            for (const transaksi of data) {
+                if (transaksi.jenis === jenis && transaksi.nominal > nilaiTerbesar) {
+                    kategoriTerbesar = transaksi.kategori;
+                    nilaiTerbesar = transaksi.nominal;
+                }
+            }
+            return kategoriTerbesar;
+        }
+        // Panggil fungsi tampilData, rekapData, dan buatGrafik untuk menampilkan data awal saat halaman dimuat
+        tampilData();
+        rekapData();
+    </script>
 </body>
+
 </html>
