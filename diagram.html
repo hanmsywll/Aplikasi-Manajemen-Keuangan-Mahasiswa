@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Keuangan Mahasiswa</title>
+<style>
+    #transactions {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    #transactions td, #transactions th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    #transactions th {
+        background-color: #f2f2f2;
+    }
+    .charts {
+        display: flex;
+        justify-content: space-around;
+    }
+    .chart-container {
+        width: 45%;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+<h2>Manajemen Keuangan Mahasiswa</h2>
+<form id="transaction-form">
+    <label for="type">Tipe:</label>
+    <select id="type">
+        <option value="income">Pemasukan</option>
+        <option value="expense">Pengeluaran</option>
+    </select><br><br>
+    <label for="date">Tanggal:</label>
+    <input type="date" id="date" required><br><br>
+    <label for="category">Kategori:</label>
+    <input type="text" id="category" required><br><br>
+    <label for="amount">Nominal:</label>
+    <input type="number" id="amount" required><br><br>
+    <button type="submit">Tambah Transaksi</button>
+</form>
+
+<h2>Daftar Transaksi</h2>
+<table id="transactions">
+    <thead>
+        <tr>
+            <th>Tipe</th>
+            <th>Tanggal</th>
+            <th>Kategori</th>
+            <th>Nominal</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody id="transaction-list">
+        
+    </tbody>
+</table>
+
+<div class="charts">
+    <div id="overallChart" class="chart-container"></div>
+    <div id="categoryChart" class="chart-container"></div>
+</div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script>
+    const form = document.getElementById('transaction-form');
+    const typeInput = document.getElementById('type');
+    const dateInput = document.getElementById('date');
+    const categoryInput = document.getElementById('category');
+    const amountInput = document.getElementById('amount');
+    const transactionList = document.getElementById('transaction-list');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const type = typeInput.value;
+        const date = dateInput.value;
+        const category = categoryInput.value;
+        const amount = parseFloat(amountInput.value);
+
+        addTransaction(type, date, category, amount);
+        updateCharts();
+        form.reset();
+    });
+
+    function addTransaction(type, date, category, amount) {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</td>
+            <td>${date}</td>
+            <td>${category}</td>
+            <td>${amount}</td>
+            <td><button onclick="deleteTransaction(this)">Hapus</button></td>
+        `;
+        transactionList.appendChild(newRow);
+    }
+
+    function deleteTransaction(row) {
+        row.parentNode.parentNode.remove();
+        updateCharts();
+    }
+
+    function updateCharts() {
+        const rows = document.querySelectorAll('#transaction-list tr');
+        let totalIncome = 0;
+        let totalExpense = 0;
+        const categories = {};
+
+        rows.forEach(row => {
+            const type = row.cells[0].textContent.trim();
+            const amount = parseFloat(row.cells[3].textContent);
+            if (type === 'Pemasukan') {
+                totalIncome += amount;
+            } else if (type === 'Pengeluaran') {
+                totalExpense += amount;
+                const category = row.cells[2].textContent.trim();
+                if (categories[category]) {
+                    categories[category] += amount;
+                } else {
+                    categories[category] = amount;
+                }
+            }
+        });
+
+        const overallChart = new CanvasJS.Chart("overallChart", {
+            animationEnabled: true,
+            title: {
+                text: "Perbandingan Pemasukan dan Pengeluaran"
+            },
+            data: [{
+                type: "pie",
+                startAngle: 240,
+                yValueFormatString: "",
+                indexLabel: "{label} Rp {y}",
+                dataPoints: [
+                    {y: totalIncome, label: "Pemasukan"},
+                    {y: totalExpense, label: "Pengeluaran"}
+                ]
+            }]
+        });
+
+        const categoryDataPoints = Object.entries(categories).map(([category, amount]) => ({
+            y: (amount / totalExpense * 100).toFixed(2),
+            label: `${category} (${amount})`
+        }));
+
+        const categoryChart = new CanvasJS.Chart("categoryChart", {
+            animationEnabled: true,
+            title: {
+                text: "Rincian Pengeluaran berdasarkan Kategori"
+            },
+            data: [{
+                type: "pie",
+                startAngle: 240,
+                yValueFormatString: "##0.00\"%\"",
+                indexLabel: "{label} {y}",
+                dataPoints: categoryDataPoints
+            }]
+        });
+
+        overallChart.render();
+        categoryChart.render();
+    }
+</script>
+</body>
+</html>
