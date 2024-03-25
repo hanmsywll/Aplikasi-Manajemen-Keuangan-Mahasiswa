@@ -8,12 +8,14 @@
             const overallChart = new CanvasJS.Chart("overallChart", {
                 animationEnabled: true,
                 title: {
-                    text: "Perbandingan Pemasukan dan Pengeluaran"
+                    text: "Perbandingan Pemasukan dan Pengeluaran",
+                    fontFamily: "Helvetica, sans-serif",
+                    fontWeight: "550"
                 },
                 data: [{
                     type: "pie",
                     startAngle: 240,
-                    yValueFormatString: "Rp #,##0",
+                    yValueFormatString: "#,##0",
                     indexLabel: "{label} Rp {y}",
                     dataPoints: [
                         { y: totalIncome, label: "Pemasukan" },
@@ -41,19 +43,22 @@
             const categoryChart = new CanvasJS.Chart("categoryChart", {
                 animationEnabled: true,
                 title: {
-                    text: "Rincian Pengeluaran berdasarkan Kategori"
+                    text: "Rincian Pengeluaran",
+                    fontFamily: "Helvetica, sans-serif",
+                    fontWeight: "550"
                 },
                 data: [{
                     type: "pie",
                     startAngle: 240,
-                    yValueFormatString: "Rp #,##0",
+                    yValueFormatString: "#,##0",
                     indexLabel: "{label} Rp {y}",
                     dataPoints: categoryDataPoints
                 }]
             });
             categoryChart.render();
-        }
 
-       
+            const balance = totalIncome - totalExpense;
+            document.getElementById("totalBalance").innerText = `Saldo: Rp. ${balance}`;
+        }
         updateCharts(); // Memanggil fungsi untuk menggambar grafik
 
