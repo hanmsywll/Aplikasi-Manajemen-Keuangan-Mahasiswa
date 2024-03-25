@@ -74,6 +74,6 @@
             // Mereset form setelah transaksi ditambahkan
             this.reset();
 
-            // Menampilkan pesan notifikasi
+            // Menampilkan pesan notifikasi berhasil ditambahkan
             showNotification("Berhasil ditambahkan!");
         });
