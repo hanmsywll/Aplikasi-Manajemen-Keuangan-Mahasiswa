@@ -1,8 +1,8 @@
         // Fungsi untuk memperbarui grafik
         function updateCharts() {
             // Menghitung total pemasukan dan pengeluaran
-            let totalPemasukan = finances.income.reduce((total, item) => total + item.amount, 0);
-            let totalPengeluaran = finances.expenses.reduce((total, item) => total + item.amount, 0);
+            let totalPemasukan = keuangan.pemasukan.reduce((total, item) => total + item.jumlah, 0);
+            let totalPengeluaran = keuangan.pengeluaran.reduce((total, item) => total + item.jumlah, 0);
 
             // Render grafik Perbandingan Pemasukan dan Pengeluaran
             const chartPerbandingan = new CanvasJS.Chart("chartPerbandingan", {
@@ -26,18 +26,18 @@
             chartPerbandingan.render();
 
             // Render grafik Rincian Pengeluaran berdasarkan Kategori
-            let categories = {};
-            finances.expenses.forEach(item => {
-                if (categories[item.category]) {
-                    categories[item.category] += item.amount;
+            let kategori = {};
+            keuangan.pengeluaran.forEach(item => {
+                if (kategori[item.kategori]) {
+                    kategori[item.kategori] += item.jumlah;
                 } else {
-                    categories[item.category] = item.amount;
+                    kategori[item.kategori] = item.jumlah;
                 }
             });
 
-            const categoryDataPoints = Object.entries(categories).map(([category, amount]) => ({
-                y: (amount / totalPengeluaran * 100).toFixed(2),
-                label: `${category} (Rp. ${amount.toLocaleString()})`
+            const categoryDataPoints = Object.entries(kategori).map(([kategori, jumlah]) => ({
+                y: (jumlah / totalPengeluaran * 100).toFixed(2),
+                label: `${kategori} (Rp. ${jumlah.toLocaleString()})`
             }));
 
             const chartRincianPengeluaran = new CanvasJS.Chart("chartRincianPengeluaran", {

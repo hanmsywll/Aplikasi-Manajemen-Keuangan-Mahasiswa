@@ -60,14 +60,14 @@ function hapusPengeluaran(index) {
 
 // Fungsi untuk menguptanggal total pengeluaran
 function updateTotalPengeluaran() {
-    let updateTotalPengeluaran = 0;
+    let totalPengeluaran = 0;
     keuangan.pengeluaran.forEach(item => {
-        updateTotalPengeluaran += item.jumlah;
+        totalPengeluaran += item.jumlah;
     });
     
-    document.getElementById("updateTotalPengeluaran").innerText = `Total Pengeluaran: Rp. ${updateTotalPengeluaran}`;
+    document.getElementById("totalPengeluaran").innerText = `Total Pengeluaran: Rp. ${totalPengeluaran}`;
 }
 
 
 tampilkanListPengeluaran();
-updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
+updateTotalPengeluaran(); // Memanggil fungsi untuk update total pengeluaran
