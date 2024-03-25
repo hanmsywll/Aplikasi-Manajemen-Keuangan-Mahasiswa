@@ -1,25 +1,25 @@
 
         // Data untuk kategori pemasukan dan pengeluaran
-        const incomeCategories = ["Mandiri", "Eksternal"];
         const kategoriPengeluaran = ["Makanan", "Kesehatan", "Transportasi", "Komunikasi", "Kebutuhan Wajib", "Kebutuhan Akademik", "Hiburan"];
+        const kategoriPemasukan = ["Mandiri", "Eksternal"];
 
         // Fungsi untuk mengisi dropdown kategori sesuai dengan jenis transaksi yang dipilih
         function fillCategoryDropdown() {
             const transactionType = document.getElementById("transactionType").value;
-            const categoryDropdown = document.getElementById("category");
+            const categoryDropdown = document.getElementById("kategori");
             categoryDropdown.innerHTML = "<option value='' selected disabled>Pilih Kategori</option>";
 
-            let categories = [];
-            if (transactionType === "income") {
-                categories = incomeCategories;
+            let kategori = [];
+            if (transactionType === "pemasukan") {
+                kategori = kategoriPemasukan;
             } else {
-                categories = kategoriPengeluaran;
+                kategori = kategoriPengeluaran;
             }
 
-            categories.forEach(category => {
+            kategori.forEach(kategori => {
                 const option = document.createElement("option");
-                option.value = category;
-                option.textContent = category;
+                option.value = kategori;
+                option.textContent = kategori;
                 categoryDropdown.appendChild(option);
             });
         }
@@ -34,7 +34,7 @@
 
         // Deklarasi variabel untuk menyimpan data transaksi
         let keuangan = {
-            income: [],
+            pemasukan: [],
             pengeluaran: []
         };
 
@@ -59,21 +59,21 @@
             event.preventDefault(); // Mencegah form dari melakukan submit default
 
             // Mendapatkan nilai dari input
-            const amount = parseFloat(document.getElementById("amount").value);
-            const category  = document.getElementById("category").value;
-            const description = document.getElementById("description").value;
-            const date = document.getElementById("date").value;
+            const jumlah = parseFloat(document.getElementById("jumlah").value);
+            const kategori  = document.getElementById("kategori").value;
+            const deskripsi = document.getElementById("deskripsi").value;
+            const tanggal = document.getElementById("tanggal").value;
 
             // Memanggil fungsi untuk menambahkan transaksi ke dalam array
-            if (document.getElementById("transactionType").value === "income") {
-                tambahPemasukan(amount, category, description, date);
+            if (document.getElementById("transactionType").value === "pemasukan") {
+                tambahPemasukan(jumlah, kategori, deskripsi, tanggal);
             } else {
-                tambahPengeluaran(amount, category, description, date);
+                tambahPengeluaran(jumlah, kategori, deskripsi, tanggal);
             }
 
             // Mereset form setelah transaksi ditambahkan
             this.reset();
-
-            // Menampilkan pesan notifikasi
+            
+            // Menampilkan pesan notifikasi berhasil ditambahkan
             showNotification("Berhasil ditambahkan!");
         });

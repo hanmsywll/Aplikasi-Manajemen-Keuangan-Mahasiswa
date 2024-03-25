@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Keuangan Mahasiswa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #transactions {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #transactions td, #transactions th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        #transactions th {
+            background-color: #f2f2f2;
+        }
+        .charts {
+            display: flex;
+            justify-content: space-around;
+        }
+        .chart-container {
+            width: 45%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Manajemen Keuangan Mahasiswa</h1>
+        
+        <!-- Form untuk memilih jenis transaksi -->
+        <div class="form-group">
+            <label for="transactionType">Jenis Transaksi:</label>
+            <select class="form-control" id="transactionType">
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+            </select>
+        </div>
+        
+        <!-- Form untuk memasukkan transaksi -->
+        <form id="transactionForm">
+            <div class="form-group">
+                <label for="amount">Jumlah:</label>
+                <input type="number" class="form-control" id="amount" placeholder="Jumlah" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Kategori:</label>
+                <input type="text" class="form-control" id="category" placeholder="Kategori" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Deskripsi:</label>
+                <input type="text" class="form-control" id="description" placeholder="Deskripsi" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Tanggal:</label>
+                <input type="date" class="form-control" id="date" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
+        </form>
+        
+        <!-- Tabel Pemasukan -->
+        <div class="mt-5">
+            <h2>Daftar Pemasukan</h2>
+            <table id="incomeTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Nominal</th>
+                        <th scope="col">Keterangan</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="incomeTableBody">
+                    <!-- Tabel akan diisi dengan data melalui JavaScript -->
+                </tbody>
+            </table>
+            <p id="noIncomeMessage">Belum ada data pemasukan yang dapat ditampilkan.</p>
+        </div>
+        <p id="totalIncome"></p> <!-- Menampilkan total pemasukan -->
+
+        <!-- Tabel Pengeluaran -->
+        <div class="mt-5">
+            <h2>Daftar Pengeluaran</h2>
+            <table id="expenseTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Nominal</th>
+                        <th scope="col">Keterangan</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="expenseTableBody">
+                    <!-- Tabel akan diisi dengan data melalui JavaScript -->
+                </tbody>
+            </table>
+            <p id="noExpenseMessage">Belum ada data pengeluaran yang dapat ditampilkan.</p>
+        </div>
+        <p id="totalExpense"></p> <!-- Menampilkan total pengeluaran -->
+    </div>
+
+    <!-- Charts -->
+    <div class="charts mt-5">
+        <div id="overallChart" class="chart-container"></div>
+        <div id="categoryChart" class="chart-container"></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script>
+        // Data untuk kategori pemasukan dan pengeluaran
+        const incomeCategories = ["Mandiri", "Eksternal"];
+        const expenseCategories = ["Makanan", "Kesehatan", "Transportasi", "Komunikasi", "Kebutuhan Wajib", "Kebutuhan Akademik", "Hiburan"];
+
+// Fungsi untuk mengisi dropdown kategori sesuai dengan jenis transaksi yang dipilih
+function fillCategoryDropdown() {
+    const transactionType = document.getElementById("transactionType").value;
+    const categoryInput = document.getElementById("category");
+    categoryInput.value = "";
+
+    let categories = [];
+    if (transactionType === "income") {
+        categories = incomeCategories;
+    } else {
+        categories = expenseCategories;
+    }
+
+    categoryInput.placeholder = categories.length > 0 ? "Pilih Kategori" : "Kategori tidak tersedia";
+}
+
+        // Memanggil fungsi fillCategoryDropdown saat halaman dimuat
+        fillCategoryDropdown();
+
+        // Menangani perubahan jenis transaksi
+        document.getElementById("transactionType").addEventListener("change", fillCategoryDropdown);
+
+        // Deklarasi variabel untuk menyimpan data transaksi
+        let finances = {
+            income: [],
+            expenses: []
+        };
+
+        // Menampilkan pesan notifikasi
+        function showNotification(message) {
+            const notificationDiv = document.createElement("div");
+            notificationDiv.className = "alert alert-success mt-3";
+            notificationDiv.setAttribute("role", "alert");
+            notificationDiv.textContent = message;
+
+            const container = document.querySelector(".container");
+            container.insertBefore(notificationDiv, container.firstChild);
+
+                    // Menghapus pesan notifikasi setelah 3 detik
+                    setTimeout(function() {
+                notificationDiv.remove();
+            }, 3000);
+        }
+
+        // Menangani submit form
+        document.getElementById("transactionForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Mencegah form dari melakukan submit default
+
+            // Mendapatkan nilai dari input
+            const amount = parseFloat(document.getElementById("amount").value);
+            const category = document.getElementById("category").value;
+            const description = document.getElementById("description").value;
+            const date = document.getElementById("date").value;
+
+            // Memanggil fungsi untuk menambahkan transaksi ke dalam array
+            if (document.getElementById("transactionType").value === "income") {
+                tambahPemasukan(amount, category, description, date);
+            } else {
+                tambahPengeluaran(amount, category, description, date);
+            }
+
+            // Mereset form setelah transaksi ditambahkan
+            this.reset();
+
+            // Menampilkan pesan notifikasi
+            showNotification("Berhasil ditambahkan!");
+        });
+
+        // Fungsi untuk menambahkan pemasukan
+        function tambahPemasukan(amount, category, description, date) {
+            finances.income.push({ amount, category, description, date });
+            tampilkanListPemasukan();
+            updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+            updateCharts(); // Memanggil fungsi untuk update grafik
+        }
+
+        // Fungsi untuk menambahkan pengeluaran
+        function tambahPengeluaran(amount, category, description, date) {
+            finances.expenses.push({ amount, category, description, date });
+            tampilkanListPengeluaran();
+            updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+            updateCharts(); // Memanggil fungsi untuk update grafik
+        }
+
+        // Fungsi untuk menampilkan tabel pemasukan
+        function tampilkanListPemasukan() {
+            const incomeTableBody = document.getElementById("incomeTableBody");
+            incomeTableBody.innerHTML = ""; // Mengosongkan isi tabel
+
+            if (finances.income.length === 0) {
+                document.getElementById("noIncomeMessage").style.display = "block";
+            } else {
+                document.getElementById("noIncomeMessage").style.display = "none";
+                finances.income.forEach((item, index) => {
+                    const row = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${item.date}</td>
+                                    <td>${item.category}</td>
+                                    <td>Rp. ${item.amount}</td>
+                                    <td>${item.description}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="editPemasukan(${index})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusPemasukan(${index})">Hapus</button>
+                                    </td>
+                                </tr>`;
+                    incomeTableBody.innerHTML += row;
+                });
+            }
+        }
+
+        // Fungsi untuk menampilkan tabel pengeluaran
+        function tampilkanListPengeluaran() {
+            const expenseTableBody = document.getElementById("expenseTableBody");
+            expenseTableBody.innerHTML = ""; // Mengosongkan isi tabel
+
+            if (finances.expenses.length === 0) {
+                document.getElementById("noExpenseMessage").style.display = "block";
+            } else {
+                document.getElementById("noExpenseMessage").style.display = "none";
+                finances.expenses.forEach((item, index) => {
+                    const row = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${item.date}</td>
+                                    <td>${item.category}</td>
+                                    <td>Rp. ${item.amount}</td>
+                                    <td>${item.description}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="editPengeluaran(${index})">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="hapusPengeluaran(${index})">Hapus</button>
+                                    </td>
+                                </tr>`;
+                    expenseTableBody.innerHTML += row;
+                });
+            }
+        }
+
+        // Fungsi untuk mengedit pemasukan
+        function editPemasukan(index) {
+            const newAmount = parseFloat(prompt("Masukkan jumlah Pemasukan baru:"));
+
+            // Memastikan input jumlah adalah angka positif
+            if (!isNaN(newAmount) && newAmount > 0) {
+                finances.income[index].amount = newAmount;
+                tampilkanListPemasukan();
+                updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+                updateCharts(); // Memanggil fungsi untuk update grafik
+            } else {
+                alert("Masukkan jumlah Pemasukan yang valid (angka positif).");
+            }
+        }
+
+        // Fungsi untuk menghapus pemasukan
+        function hapusPemasukan(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus Pemasukan ini?")) {
+                finances.income.splice(index, 1);
+                tampilkanListPemasukan();
+                updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+                updateCharts(); // Memanggil fungsi untuk update grafik
+            }
+        }
+
+        // Fungsi untuk mengedit pengeluaran
+        function editPengeluaran(index) {
+            const newAmount = parseFloat(prompt("Masukkan jumlah Pengeluaran baru:"));
+
+            // Memastikan input jumlah adalah angka positif
+            if (!isNaN(newAmount) && newAmount > 0) {
+                finances.expenses[index].amount = newAmount;
+                tampilkanListPengeluaran();
+                updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+                updateCharts(); // Memanggil fungsi untuk update grafik
+            } else {
+                alert("Masukkan jumlah Pengeluaran yang valid (angka positif).");
+            }
+        }
+
+        // Fungsi untuk menghapus pengeluaran
+        function hapusPengeluaran(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus Pengeluaran ini?")) {
+                finances.expenses.splice(index, 1);
+                tampilkanListPengeluaran();
+                updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+                updateCharts(); // Memanggil fungsi untuk update grafik
+            }
+        }
+
+        // Fungsi untuk mengupdate total pemasukan
+        function updateTotalIncome() {
+            const totalIncome = finances.income.reduce((total, item) => total + item.amount, 0);
+            document.getElementById("totalIncome").innerText = `Total Pemasukan: Rp. ${totalIncome}`;
+        }
+
+        // Fungsi untuk mengupdate total pengeluaran
+        function updateTotalExpense() {
+            const totalExpense = finances.expenses.reduce((total, item) => total + item.amount, 0);
+            document.getElementById("totalExpense").innerText = `Total Pengeluaran: Rp. ${totalExpense}`;
+        }
+
+        //        // Fungsi untuk memperbarui grafik
+        function updateCharts() {
+            // Memperbarui grafik secara keseluruhan
+            updateOverallChart();
+
+            // Memperbarui grafik kategori
+            updateCategoryChart();
+        }
+
+        // Fungsi untuk memperbarui grafik secara keseluruhan
+        function updateOverallChart() {
+            const overallDataPoints = [
+                { label: "Pemasukan", y: finances.income.reduce((total, item) => total + item.amount, 0) },
+                { label: "Pengeluaran", y: finances.expenses.reduce((total, item) => total + item.amount, 0) }
+            ];
+
+            const overallChart = new CanvasJS.Chart("overallChart", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Ringkasan Keuangan"
+                },
+                data: [{
+                    type: "pie",
+                    indexLabel: "{label}: {y}",
+                    dataPoints: overallDataPoints
+                }]
+            });
+
+            overallChart.render();
+        }
+
+        // Fungsi untuk memperbarui grafik kategori
+        function updateCategoryChart() {
+            const incomeByCategory = groupByCategory(finances.income);
+            const expenseByCategory = groupByCategory(finances.expenses);
+
+            const categoryDataPoints = [];
+            incomeCategories.forEach(category => {
+                categoryDataPoints.push({
+                    label: category,
+                    y: incomeByCategory[category] ? incomeByCategory[category] : 0
+                });
+            });
+            expenseCategories.forEach(category => {
+                categoryDataPoints.push({
+                    label: category,
+                    y: expenseByCategory[category] ? expenseByCategory[category] : 0
+                });
+            });
+
+            const categoryChart = new CanvasJS.Chart("categoryChart", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Pemasukan dan Pengeluaran berdasarkan Kategori"
+                },
+                axisY: {
+                    title: "Jumlah (Rp)"
+                },
+                legend: {
+                    cursor: "pointer",
+                    itemclick: explodePie
+                },
+                data: [{
+                    type: "column",
+                    showInLegend: true,
+                    legendMarkerColor: "grey",
+                    legendText: "{label}",
+                    dataPoints: categoryDataPoints
+                }]
+            });
+
+            categoryChart.render();
+        }
+
+        // Fungsi untuk mengelompokkan transaksi berdasarkan kategori
+        function groupByCategory(transactions) {
+            const categoryMap = {};
+            transactions.forEach(transaction => {
+                if (categoryMap[transaction.category]) {
+                    categoryMap[transaction.category] += transaction.amount;
+                } else {
+                    categoryMap[transaction.category] = transaction.amount;
+                }
+            });
+            return categoryMap;
+        }
+
+        // Fungsi untuk meledakkan bagian dari grafik pie
+        function explodePie(e) {
+            if (typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+                e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+            } else {
+                e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+            }
+            e.chart.render();
+        }
+
+        // Memanggil fungsi untuk menampilkan tabel pemasukan dan pengeluaran
+        tampilkanListPemasukan();
+        tampilkanListPengeluaran();
+
+        // Memanggil fungsi untuk update total pemasukan dan pengeluaran
+        updateTotalIncome();
+        updateTotalExpense();
+
+        // Memanggil fungsi untuk update grafik
+        updateCharts();
+    </script>
+</body>
+</html>
