@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Keuangan Mahasiswa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>Manajemen Keuangan Mahasiswa</h1>
+        
+        <!-- Form untuk memilih jenis transaksi -->
+        <div class="form-group">
+            <label for="transactionType">Jenis Transaksi:</label>
+            <select class="form-control" id="transactionType">
+                <option value="income">Pemasukan</option>
+                <option value="expense">Pengeluaran</option>
+            </select>
+        </div>
+        
+        <!-- Form untuk memasukkan transaksi -->
+        <form id="transactionForm">
+            <div class="form-group">
+                <label for="amount">Jumlah:</label>
+                <input type="number" class="form-control" id="amount" placeholder="Jumlah" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Kategori:</label>
+                <select class="form-control" id="category" required>
+                    <option value="" selected disabled>Pilih Kategori</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Deskripsi:</label>
+                <input type="text" class="form-control" id="description" placeholder="Deskripsi" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Tanggal:</label>
+                <input type="date" class="form-control" id="date" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
+        </form>
+        
+        <!-- Tabel Pemasukan -->
+        <div class="mt-5">
+            <h2>Daftar Pemasukan</h2>
+            <table id="incomeTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Nominal</th>
+                        <th scope="col">Keterangan</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="incomeTableBody">
+                    <!-- Tabel akan diisi dengan data melalui JavaScript -->
+                </tbody>
+            </table>
+            <p id="noIncomeMessage">Belum ada data pemasukan yang dapat ditampilkan.</p>
+        </div>
+        <p id="totalIncome"></p> <!-- Menampilkan total pemasukan -->
+
+        <!-- Tabel Pengeluaran -->
+        <div class="mt-5">
+            <h2>Daftar Pengeluaran</h2>
+            <table id="expenseTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col">Nominal</th>
+                        <th scope="col">Keterangan</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="expenseTableBody">
+                    <!-- Tabel akan diisi dengan data melalui JavaScript -->
+                </tbody>
+            </table>
+            <p id="noExpenseMessage">Belum ada data pengeluaran yang dapat ditampilkan.</p>
+        </div>
+        <p id="totalExpense"></p> <!-- Menampilkan total pengeluaran -->
+
+        <div class="row">
+            <div class="col-md-6">
+                <div id="overallChart" style="height: 300px;"></div>
+            </div>
+            <div class="col-md-6">
+
+                <div id="categoryChart" style="height: 300px;"></div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- CanvasJS -->
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="js/form.js"></script>
+    <script src="js/pemasukan.js"></script>
+    <script src="js/pengeluaran.js"></script>
+    <script src="js/diagram.js"></script>
+</body>
+
+</html>
+
