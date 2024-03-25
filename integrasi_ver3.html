@@ -91,11 +91,9 @@
 
         <div class="row">
             <div class="col-md-6">
-                <h2>Perbandingan Pemasukan dan Pengeluaran</h2>
                 <div id="overallChart" style="height: 300px;"></div>
             </div>
             <div class="col-md-6">
-                <h2>Rincian Pengeluaran berdasarkan Kategori</h2>
                 <div id="categoryChart" style="height: 300px;"></div>
             </div>
         </div>
@@ -103,9 +101,14 @@
     </div>
 
     <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax
+    <!-- Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- CanvasJS -->
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
     <script>
         // Data untuk kategori pemasukan dan pengeluaran
@@ -192,6 +195,7 @@
             finances.income.push({ amount, category, description, date });
             tampilkanListPemasukan();
             updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+            updateCharts(); // Memanggil fungsi untuk update grafik
         }
 
         // Fungsi untuk menambahkan pengeluaran
@@ -199,6 +203,7 @@
             finances.expenses.push({ amount, category, description, date });
             tampilkanListPengeluaran();
             updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+            updateCharts(); // Memanggil fungsi untuk update grafik
         }
 
         // Fungsi untuk menampilkan tabel pemasukan
@@ -262,6 +267,7 @@
                 finances.income[index].amount = newAmount;
                 tampilkanListPemasukan();
                 updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+                updateCharts(); // Memanggil fungsi untuk update grafik
             } else {
                 alert("Masukkan jumlah Pemasukan yang valid (angka positif).");
             }
@@ -273,6 +279,7 @@
                 finances.income.splice(index, 1);
                 tampilkanListPemasukan();
                 updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
+                updateCharts(); // Memanggil fungsi untuk update grafik
             }
         }
 
@@ -283,8 +290,9 @@
             // Memastikan input jumlah adalah angka positif
             if (!isNaN(newAmount) && newAmount > 0) {
                 finances.expenses[index].amount = newAmount;
-                tampilkanListPengeluaruaran();
+                tampilkanListPengeluaran();
                 updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+                updateCharts(); // Memanggil fungsi untuk update grafik
             } else {
                 alert("Masukkan jumlah Pengeluaran yang valid (angka positif).");
             }
@@ -296,6 +304,7 @@
                 finances.expenses.splice(index, 1);
                 tampilkanListPengeluaran();
                 updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+                updateCharts(); // Memanggil fungsi untuk update grafik
             }
         }
 
@@ -367,13 +376,14 @@
             categoryChart.render();
         }
 
-
         // Memanggil fungsi tampilkanListPemasukan dan tampilkanListPengeluaran saat halaman dimuat
         tampilkanListPemasukan();
         tampilkanListPengeluaran();
         updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
         updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+        updateCharts(); // Memanggil fungsi untuk menggambar grafik
     </script>
 </body>
 
 </html>
+
