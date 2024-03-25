@@ -9,13 +9,13 @@
 
         // Fungsi untuk menampilkan tabel pemasukan
         function tampilkanListPemasukan() {
-            const bodyTabelPemasukan = document.getElementById("bodyTabelPemasukan");
-            bodyTabelPemasukan.innerHTML = ""; // Mengosongkan isi tabel
+            const tabelBodyPemasukan = document.getElementById("tabelBodyPemasukan");
+            tabelBodyPemasukan.innerHTML = ""; // Mengosongkan isi tabel
 
             if (finances.pemasukan.length === 0) {
-                document.getElementById("pesanBelumAdaPemasukan").style.display = "block";
+                document.getElementById("pesanPemasukanKosong").style.display = "block";
             } else {
-                document.getElementById("pesanBelumAdaPemasukan").style.display = "none";
+                document.getElementById("pesanPemasukanKosong").style.display = "none";
                 finances.pemasukan.forEach((item, index) => {
                     const row = `<tr>
                                     <td>${index + 1}</td>
@@ -28,7 +28,7 @@
                                         <button class="btn btn-danger btn-sm" onclick="hapusPemasukan(${index})">Hapus</button>
                                     </td>
                                 </tr>`;
-                    bodyTabelPemasukan.innerHTML += row;
+                    tabelBodyPemasukan.innerHTML += row;
                 });
             }
         }

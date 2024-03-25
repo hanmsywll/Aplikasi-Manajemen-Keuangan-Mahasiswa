@@ -25,22 +25,22 @@
         <!-- Form untuk memasukkan transaksi -->
         <form id="transactionForm">
             <div class="form-group">
-                <label for="amount">Jumlah:</label>
-                <input type="number" class="form-control" id="amount" placeholder="Jumlah" required>
+                <label for="jumlah">Jumlah:</label>
+                <input type="number" class="form-control" id="jumlah" placeholder="Jumlah" required>
             </div>
             <div class="form-group">
-                <label for="category">Kategori:</label>
-                <select class="form-control" id="category" required>
+                <label for="kategori">Kategori:</label>
+                <select class="form-control" id="kategori" required>
                     <option value="" selected disabled>Pilih Kategori</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="description">Deskripsi:</label>
-                <input type="text" class="form-control" id="description" placeholder="Deskripsi" required>
+                <label for="deskripsi">Deskripsi:</label>
+                <input type="text" class="form-control" id="deskripsi" placeholder="Deskripsi" required>
             </div>
             <div class="form-group">
-                <label for="date">Tanggal:</label>
-                <input type="date" class="form-control" id="date" required>
+                <label for="tanggal">Tanggal:</label>
+                <input type="date" class="form-control" id="tanggal" required>
             </div>
             <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
         </form>
@@ -48,7 +48,7 @@
         <!-- Tabel Pemasukan -->
         <div class="mt-5">
             <h2>Daftar Pemasukan</h2>
-            <table id="headTabelPemasukan" class="table">
+            <table id="tabelHeadPemasukan" class="table">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -59,11 +59,11 @@
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="bodyTabelPemasukan">
+                <tbody id="tabelBodyPemasukan">
                     <!-- Tabel akan diisi dengan data melalui JavaScript -->
                 </tbody>
             </table>
-            <p id="pesanBelumAdaPemasukan">Belum ada data pemasukan yang dapat ditampilkan.</p>
+            <p id="pesanPemasukanKosong">Belum ada data pemasukan yang dapat ditampilkan.</p>
         </div>
         <p id="totalPemasukan"></p> <!-- Menampilkan total pemasukan -->
 
