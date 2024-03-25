@@ -1,69 +1,73 @@
+// Fungsi untuk menambahkan pengeluaran
+function tambahPengeluaran(jumlah, kategori, deksripsi, tanggal) {
+    keuangan.pengeluaran.push({ jumlah, kategori, deksripsi, tanggal });
+    tampilkanListPengeluaran();
+    updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
+    updateCharts(); // Memanggil fungsi untuk uptanggal grafik
+}
 
-        // Fungsi untuk menambahkan pengeluaran
-        function tambahPengeluaran(amount, category, description, date) {
-            finances.expenses.push({ amount, category, description, date });
-            tampilkanListPengeluaran();
-            updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
-            updateCharts(); // Memanggil fungsi untuk update grafik
-        }
+// Fungsi untuk menampilkan tabel pengeluaran
+function tampilkanListPengeluaran() {
+    const tablebodyPengeluaran = document.getElementById("tablebodyPengeluaran");
+    tablebodyPengeluaran.innerHTML = ""; // Mengosongkan isi tabel
 
-        // Fungsi untuk menampilkan tabel pengeluaran
-        function tampilkanListPengeluaran() {
-            const expenseTableBody = document.getElementById("expenseTableBody");
-            expenseTableBody.innerHTML = ""; // Mengosongkan isi tabel
-
-            if (finances.expenses.length === 0) {
-                document.getElementById("noExpenseMessage").style.display = "block";
-            } else {
-                document.getElementById("noExpenseMessage").style.display = "none";
-                finances.expenses.forEach((item, index) => {
-                    const row = `<tr>
+    if (keuangan.pengeluaran.length === 0) {
+        document.getElementById("pesanPengeluarankosong").style.display = "block"; //
+    } else {
+        document.getElementById("pesanPengeluarankosong").style.display = "none"; //
+        keuangan.pengeluaran.forEach((item, index) => {
+            const row = `<tr>
                                     <td>${index + 1}</td>
-                                    <td>${item.date}</td>
-                                    <td>${item.category}</td>
-                                    <td>Rp. ${item.amount}</td>
-                                    <td>${item.description}</td>
+                                    <td>${item.tanggal}</td>
+                                    <td>${item.kategori}</td>
+                                    <td>Rp. ${item.jumlah}</td>
+                                    <td>${item.deksripsi}</td>
                                     <td>
                                         <button class="btn btn-primary btn-sm" onclick="editPengeluaran(${index})">Edit</button>
                                         <button class="btn btn-danger btn-sm" onclick="hapusPengeluaran(${index})">Hapus</button>
                                     </td>
                                 </tr>`;
-                    expenseTableBody.innerHTML += row;
-                });
-            }
-        }
+            tablebodyPengeluaran.innerHTML += row;
+        });
+    }
+}
 
-        // Fungsi untuk mengedit pengeluaran
-        function editPengeluaran(index) {
-            const newAmount = parseFloat(prompt("Masukkan jumlah Pengeluaran baru:"));
+// Fungsi untuk mengedit pengeluaran
+function editPengeluaran(index) {
+    const pemasukanBaru = parseFloat(prompt("Masukkan jumlah Pengeluaran baru:")); //
 
-            // Memastikan input jumlah adalah angka positif
-            if (!isNaN(newAmount) && newAmount > 0) {
-                finances.expenses[index].amount = newAmount;
-                tampilkanListPengeluaran();
-                updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
-                updateCharts(); // Memanggil fungsi untuk update grafik
-            } else {
-                alert("Masukkan jumlah Pengeluaran yang valid (angka positif).");
-            }
-        }
-
-        // Fungsi untuk menghapus pengeluaran
-        function hapusPengeluaran(index) {
-            if (confirm("Apakah Anda yakin ingin menghapus Pengeluaran ini?")) {
-                finances.expenses.splice(index, 1);
-                tampilkanListPengeluaran();
-                updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
-                updateCharts(); // Memanggil fungsi untuk update grafik
-            }
-        }
-
-
-        // Fungsi untuk mengupdate total pengeluaran
-        function updateTotalExpense() {
-            const totalExpense = finances.expenses.reduce((total, item) => total + item.amount, 0);
-            document.getElementById("totalExpense").innerText = `Total Pengeluaran: Rp. ${totalExpense}`;
-        }
-
+    // Memastikan input jumlah adalah angka positif
+    if (!isNaN(pemasukanBaru) && pemasukanBaru > 0) {
+        keuangan.pengeluaran[index].jumlah = pemasukanBaru; //
         tampilkanListPengeluaran();
-        updateTotalExpense(); // Memanggil fungsi untuk update total pengeluaran
+        updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
+        updateChar(); // Memanggil fungsi untuk uptanggal grafik
+    } else {
+        alert("Masukkan jumlah Pengeluaran yang valid (angka positif).");
+    }
+}
+
+// Fungsi untuk menghapus pengeluaran
+function hapusPengeluaran(index) {
+    if (confirm("Apakah Anda yakin ingin menghapus Pengeluaran ini?")) {
+        keuangan.pengeluaran.splice(index, 1); //
+        tampilkanListPengeluaran();
+        updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
+        updateChar(); // Memanggil fungsi untuk uptanggal grafik
+    }
+}
+
+
+// Fungsi untuk menguptanggal total pengeluaran
+function updateTotalPengeluaran() {
+    let updateTotalPengeluaran = 0;
+    keuangan.pengeluaran.forEach(item => {
+        updateTotalPengeluaran += item.jumlah;
+    });
+    
+    document.getElementById("updateTotalPengeluaran").innerText = `Total Pengeluaran: Rp. ${updateTotalPengeluaran}`;
+}
+
+
+tampilkanListPengeluaran();
+updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran

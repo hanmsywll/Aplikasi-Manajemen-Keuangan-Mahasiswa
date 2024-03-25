@@ -1,7 +1,7 @@
 
         // Data untuk kategori pemasukan dan pengeluaran
         const incomeCategories = ["Mandiri", "Eksternal"];
-        const expenseCategories = ["Makanan", "Kesehatan", "Transportasi", "Komunikasi", "Kebutuhan Wajib", "Kebutuhan Akademik", "Hiburan"];
+        const kategoriPengeluaran = ["Makanan", "Kesehatan", "Transportasi", "Komunikasi", "Kebutuhan Wajib", "Kebutuhan Akademik", "Hiburan"];
 
         // Fungsi untuk mengisi dropdown kategori sesuai dengan jenis transaksi yang dipilih
         function fillCategoryDropdown() {
@@ -13,7 +13,7 @@
             if (transactionType === "income") {
                 categories = incomeCategories;
             } else {
-                categories = expenseCategories;
+                categories = kategoriPengeluaran;
             }
 
             categories.forEach(category => {
@@ -33,9 +33,9 @@
         });
 
         // Deklarasi variabel untuk menyimpan data transaksi
-        let finances = {
+        let keuangan = {
             income: [],
-            expenses: []
+            pengeluaran: []
         };
 
         // Fungsi untuk menampilkan pesan notifikasi
