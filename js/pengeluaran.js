@@ -11,7 +11,7 @@
         function tampilkanListPengeluaran() {
             const expenseTableBody = document.getElementById("expenseTableBody");
             expenseTableBody.innerHTML = ""; // Mengosongkan isi tabel
-
+            // mengecek apakah data pemasukan sudah terisi
             if (finances.expenses.length === 0) {
                 document.getElementById("noExpenseMessage").style.display = "block";
             } else {
