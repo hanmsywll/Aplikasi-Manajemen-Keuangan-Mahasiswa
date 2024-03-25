@@ -1,6 +1,6 @@
 
         // Data untuk kategori pemasukan dan pengeluaran
-        const incomeCategories = ["Mandiri", "Eksternal"];
+        const kategoriPemasukan = ["Mandiri", "Eksternal"];
         const expenseCategories = ["Makanan", "Kesehatan", "Transportasi", "Komunikasi", "Kebutuhan Wajib", "Kebutuhan Akademik", "Hiburan"];
 
         // Fungsi untuk mengisi dropdown kategori sesuai dengan jenis transaksi yang dipilih
@@ -10,8 +10,8 @@
             categoryDropdown.innerHTML = "<option value='' selected disabled>Pilih Kategori</option>";
 
             let categories = [];
-            if (transactionType === "income") {
-                categories = incomeCategories;
+            if (transactionType === "pemasukan") {
+                categories = kategoriPemasukan;
             } else {
                 categories = expenseCategories;
             }
@@ -34,7 +34,7 @@
 
         // Deklarasi variabel untuk menyimpan data transaksi
         let finances = {
-            income: [],
+            pemasukan: [],
             expenses: []
         };
 
@@ -65,7 +65,7 @@
             const date = document.getElementById("date").value;
 
             // Memanggil fungsi untuk menambahkan transaksi ke dalam array
-            if (document.getElementById("transactionType").value === "income") {
+            if (document.getElementById("transactionType").value === "pemasukan") {
                 tambahPemasukan(amount, category, description, date);
             } else {
                 tambahPengeluaran(amount, category, description, date);

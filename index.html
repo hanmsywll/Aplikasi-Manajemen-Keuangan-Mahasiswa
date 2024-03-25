@@ -17,7 +17,7 @@
         <div class="form-group">
             <label for="transactionType">Jenis Transaksi:</label>
             <select class="form-control" id="transactionType">
-                <option value="income">Pemasukan</option>
+                <option value="pemasukan">Pemasukan</option>
                 <option value="expense">Pengeluaran</option>
             </select>
         </div>
@@ -48,7 +48,7 @@
         <!-- Tabel Pemasukan -->
         <div class="mt-5">
             <h2>Daftar Pemasukan</h2>
-            <table id="incomeTable" class="table">
+            <table id="headTabelPemasukan" class="table">
                 <thead>
                     <tr>
                         <th scope="col">No</th>
@@ -59,13 +59,13 @@
                         <th scope="col">Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="incomeTableBody">
+                <tbody id="bodyTabelPemasukan">
                     <!-- Tabel akan diisi dengan data melalui JavaScript -->
                 </tbody>
             </table>
-            <p id="noIncomeMessage">Belum ada data pemasukan yang dapat ditampilkan.</p>
+            <p id="pesanBelumAdaPemasukan">Belum ada data pemasukan yang dapat ditampilkan.</p>
         </div>
-        <p id="totalIncome"></p> <!-- Menampilkan total pemasukan -->
+        <p id="totalPemasukan"></p> <!-- Menampilkan total pemasukan -->
 
         <!-- Tabel Pengeluaran -->
         <div class="mt-5">
