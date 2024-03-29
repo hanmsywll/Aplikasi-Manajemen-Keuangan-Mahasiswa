@@ -1,9 +1,14 @@
         // Fungsi untuk memperbarui grafik
         function updateCharts() {
             // Menghitung total pemasukan dan pengeluaran
-            let totalPemasukan = keuangan.pemasukan.reduce((total, item) => total + item.jumlah, 0);
-            let totalPengeluaran = keuangan.pengeluaran.reduce((total, item) => total + item.jumlah, 0);
-
+            let totalPemasukan = 0;
+            keuangan.pemasukan.forEach(item => {
+                totalPemasukan += item.jumlah;
+            });
+            let totalPengeluaran = 0;
+            keuangan.pengeluaran.forEach(item => {
+                totalPengeluaran += item.jumlah;
+            });
             // Render grafik Perbandingan Pemasukan dan Pengeluaran
             const chartPerbandingan = new CanvasJS.Chart("chartPerbandingan", {
                 animationEnabled: true,

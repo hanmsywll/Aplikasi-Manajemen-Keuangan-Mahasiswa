@@ -1,10 +1,3 @@
-// Fungsi untuk menambahkan pemasukan
-function tambahPemasukan(amount, category, description, date) {
-    keuangan.income.push({ amount, category, description, date });
-    tampilkanListPemasukan();
-    updateTotalIncome(); // Memanggil fungsi untuk update total pemasukan
-    updateCharts(); // Memanggil fungsi untuk update grafik
-}
 
         // Fungsi untuk menambahkan pemasukan
         function tambahPemasukan(jumlah, kategori, deskripsi, tanggal) {
@@ -68,10 +61,13 @@ function tambahPemasukan(amount, category, description, date) {
 
         // Fungsi untuk mengupdate total pemasukan
         function updateTotalPemasukan() {
-            const totalPemasukan = keuangan.pemasukan.reduce((total, item) => total + item.jumlah, 0);
+            let totalPemasukan = 0;
+            keuangan.pemasukan.forEach(item => {
+                totalPemasukan += item.jumlah;
+            });
+            
             document.getElementById("totalPemasukan").innerText = `Total Pemasukan: Rp. ${totalPemasukan}`;
         }
-
         // Memanggil fungsi tampilkanListPemasukan dan tampilkanListPengeluaran saat halaman dimuat
         tampilkanListPemasukan();
         updateTotalPemasukan(); // Memanggil fungsi untuk update total pemasukan

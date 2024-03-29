@@ -2,8 +2,8 @@
 function tambahPengeluaran(jumlah, kategori, deksripsi, tanggal) {
     keuangan.pengeluaran.push({ jumlah, kategori, deksripsi, tanggal });
     tampilkanListPengeluaran();
-    updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
-    updateCharts(); // Memanggil fungsi untuk uptanggal grafik
+    updateTotalPengeluaran(); // Memanggil fungsi untuk update total pengeluaran
+    updateCharts(); // Memanggil fungsi untuk update grafik
 }
 
 // Fungsi untuk menampilkan tabel pengeluaran
@@ -34,11 +34,11 @@ function tampilkanListPengeluaran() {
 
 // Fungsi untuk mengedit pengeluaran
 function editPengeluaran(index) {
-    const pemasukanBaru = parseFloat(prompt("Masukkan jumlah Pengeluaran baru:")); //
+    const pengeluaranBaru = parseFloat(prompt("Masukkan jumlah Pengeluaran baru:")); //
 
     // Memastikan input jumlah adalah angka positif
-    if (!isNaN(pemasukanBaru) && pemasukanBaru > 0) {
-        keuangan.pengeluaran[index].jumlah = pemasukanBaru; //
+    if (!isNaN(pengeluaranBaru) && pengeluaranBaru > 0) {
+        keuangan.pengeluaran[index].jumlah = pengeluaranBaru; //
         tampilkanListPengeluaran();
         updateTotalPengeluaran(); // Memanggil fungsi untuk uptanggal total pengeluaran
         updateChar(); // Memanggil fungsi untuk uptanggal grafik
@@ -64,7 +64,7 @@ function updateTotalPengeluaran() {
     keuangan.pengeluaran.forEach(item => {
         totalPengeluaran += item.jumlah;
     });
-    
+
     document.getElementById("totalPengeluaran").innerText = `Total Pengeluaran: Rp. ${totalPengeluaran}`;
 }
 
