@@ -19,7 +19,6 @@
                 },
                 data: [{
                     type: "pie",
-                    startAngle: 240,
                     yValueFormatString: "#,##0",
                     indexLabel: "{label} Rp. {y}",
                     dataPoints: [
@@ -41,7 +40,7 @@
             });
 
             const categoryDataPoints = Object.entries(kategori).map(([kategori, jumlah]) => ({
-                y: (jumlah / totalPengeluaran * 100).toFixed(2),
+                y: (jumlah / totalPengeluaran * 100),
                 label: `${kategori} (Rp. ${jumlah.toLocaleString()})`
             }));
 
@@ -54,7 +53,6 @@
                 },
                 data: [{
                     type: "pie",
-                    startAngle: 240,
                     yValueFormatString: "##0\"%\"",
                     indexLabel: "{label} {y}",
                     dataPoints: categoryDataPoints
